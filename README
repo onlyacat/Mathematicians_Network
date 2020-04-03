@@ -1,0 +1,138 @@
+# Data Analytics 
+## Course Assignment N. 12: Mathematicians Network
+
+Zhe Huang, 2020.3
+
+---
+### The goal:
+> - Explore and describe the data (preprocess the data, visualize the variables with different graphs, distribution of the variables).
+> - While exploring the data, define research questions and answer them such as which are the top authors according to number of co-authors? Which are highly connected or isolated from others? Etc.
+> - Plot the graph that shows the links between the different authors, i.e., how the authors are connected.
+> - Use graphics to enlarge the authors that have most centrality,etc.
+---
+
+This notebook explores and analyzes the Erdös collaboration graph.
+
+
+In order to illustrate the interactive graph visualization, Jupyter Notebook provides a tool to load and run the JavaScript. It will fetch the ipynb file from Github.
+
+For this assignment, the link is [**here**](https://nbviewer.jupyter.org/github/onlyacat/Mathematicians_Network/blob/master/main.ipynb).
+
+---
+
+In this project I used `Python 3.7` as programming language. I also used `pyecharts` to draw the interactive pictures and `networkx` to analyze the graph.
+
+### 1. Basic data analysis
+
+1. The Erdös collaboration graph contains **6927** nodes and **11850** edges. The density is **0.0005** and the average degree is **3.42**. 
+
+   Assortativity measures the similarity of connections in the graph with respect to the node degree. The value of degree assortativity coefficient is **-0.116**, showing that the network is disassortative.
+
+   | Number of Nodes | Number Of Edges |  Density  | Average Degree | Degree Assortativity |
+   | :-------------: | :-------------: | :-------: | :------------: | :------------------: |
+   |      6927       |      11850      | 0.0004939 |    3.421394    |   -0.1155773969689   |
+
+---
+
+2. The `Average clustering` and `Average clustering coefficient` denote the willing that the nodes tend to cluster together or not.
+
+   `Average shortest path length` means the average number of steps along the shortest paths for all possible pairs of network nodes. It can measure the efficiency of information on a network. The value is 3.776, showing that for every two nodes on this graph, it takes about 3.7 edges to reach.
+
+   There is a negative correlation between the `Efficiency` and the `Shortest path length`. The average local efficiency is the average of the local efficiencies of each node and the average global efficiency of a graph is the average efficiency of all pairs of nodes.
+
+   | Average clustering | Average clustering coefficient | Average shortest path length | Local efficiency | Global efficiency |
+   | :----------------: | :----------------------------: | :--------------------------: | :--------------: | :---------------: |
+   |  0.1239001150187   |             0.134              |         3.7764405926         | 0.1369696346144  |  0.270402742322   |
+
+---
+
+3. The `center` is the node with eccentricity equal to radius. Obviously, 6926, **ERDOS PAUL** is the center and barycenter on this graph. The `diameter` is the maximum eccentricity, showing that two farthest nodes have the distance of 4 on this graph.
+
+   | center | barycenter | diameter |
+   | :----: | :--------: | :------: |
+   | [6926] |   [6926]   |    4     |
+
+---
+
+4. From the document of `networkx` these APIs can be used to calculate **sigma** and **omega**. Small-worldness is commonly measured with these two parameters. If sigma > 1 and omega is near to 0, this graph can be classified as small-world. However the calculation is costly and I cannot get the final result.
+
+---
+
+5. Here I ranked the influence of each node in the graph, using the [`Voterank` algorithm](https://www.nature.com/articles/srep27823). 
+
+   During the process, each node will calculate a tuple ($s_u$, $va_u$), representing the voting score and voting ability. Voting score means the number of votes obtained from its neighbors and voting ability is the number of votes that it can give its neighbors.  The final voting score is 0 because the node has been elected in previous turn. The $va_u$ for ERDOS PAUL is much bigger than the second node, so that ERDOS PAUL has more influence than the rest of authors.
+
+   Finally, it will sort the ranking result and shows the top 15 author with the highest influence. 
+   | Rank | Author ID |          Name         | Final voting score | Final voting ability |
+   | :----: | :--------: | :------: |:------: |-------- |
+   |  0   |    6926   |       ERDOS PAUL      |         0          |   -23.966835443038   |
+   |  1   |    185    |     HARARY, FRANK     |         0          |  -2.922784810126582  |
+   |  2   |     9     |       ALON, NOGA      |         0          |  -4.384177215189872  |
+   |  3   |    416    |    SHELAH, SAHARON    |         0          | -0.2922784810126582  |
+   |  4   |     85    |  COLBOURN, CHARLES J. |         0          | -1.1691139240506327  |
+
+---
+
+### 2. Graph analysis
+
+1. Here the graph shows the relation of the nodes on this network in **circular** layout. Nodes with E_number 1 contributes most of the edges. 
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200403235605365.png" alt="image-20200403235605365" style="zoom:20%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200403235633250.png" alt="image-20200403235633250" style="zoom:20%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200403235654313.png" alt="image-20200403235654313" style="zoom:20%;" />
+
+---
+
+2. Here the bar graph shows the **top 50** authors with the high degree grouping by **E_number**. 
+
+   Obviously **ERDOS PAUL,HARARY  FRANK** and **Lesaink Linda M** has the biggest number **507**, **297** and **18** in three groups. 
+
+   The average for the `green color`(E_number is 1) and `red color`(E_number is 2) is **89** and **10**.
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200403235926756.png" alt="image-20200403235926756" style="zoom:18%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200403235959819.png" alt="image-20200403235959819" style="zoom:18%;" />
+
+---
+
+3. Here the graph shows the degree histogram distribution.
+
+   We can find that **4772** nodes are **1-degree** node and the number decreased sharply. It means that most of the nodes only communicate with one node.
+
+   The range from **112** to **507** only contains **9** authors, showing that the minority owns the huge influence.
+
+   The number of **zero-degree** node is **zero**, so that the graph is connected.
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000145337.png" alt="image-20200404000145337" style="zoom:15%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000211199.png" alt="image-20200404000211199" style="zoom:15%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000253655.png" alt="image-20200404000253655" style="zoom:15%;" />
+
+
+
+---
+
+4. Here the radar graph illustrates the distribution of centralities. `degree centrality`, `betweenness centrality` and `closeness centrality` are three concepts to measure the node centrality.
+
+   Degree centrality is measured by the number of edges connected to this node.
+
+   Betweenness centrality is measured by the mentioned number in the shortest paths. As we all know the nodes rely on the shortest path to communicate. If a node always appear in the shortest path of other nodes, it has a high betweenness centrality.
+
+   Closeness centrality is measured by the shortest distance from this node to other nodes. If a node can easily reach other nodes without a long path, it can be considered as the centre of the graph and will have a high closeness centrality.
+
+   In the function first it calculates the three centralities for each node and then only keep the **top 15** nodes for each centrality. Then it intersects three sets and chooses the common nodes.
+
+   The graph shows the top **7** authors are ERDOS PAUL,GRAHAM RONALD L, ALON NOGA, BOLLOBAS BELA, ERDOS PAUL, KLEITMAN DANIEL J., HARARY FRANK and TUZA ZSOLT. Also, **ERDOS PAUL** has the highest values of three centralities.
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000441500.png" alt="image-20200404000441500" style="zoom:25%;" />
+
+---
+
+5. Here the relation graph shows the longest chain from the graph.
+
+   First it uses the function `chain_decomposition` and obtains the chains. It chooses the longest one and visualizes the result.
+
+   It contains **144** nodes and **143** edges, from author `ABBOTT HARVEY L.` to author `SUBBARAO M. V.` and vice versa.
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000526547.png" alt="image-20200404000526547" style="zoom:25%;" />
+
+---
+
+6. It uses the function `k_core` from networkx. It will remove the nodes that the degree is smaller than k repeatly. Finally, it generates a core subgraph that has a high correlation. It contains **38** nodes and **281** edges.
+
+   From the graph, we can find that almost every node has a edge with the centre node `ERDOS PAUL`, except the node `Lesniak Linda M`, which has **10** neighbours. So that, it is the **only node** that E_number is 2 on this graph. We can guess that he will have a high possibility of collaboration with `ERDOS PAUL`.
+
+<img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000624053.png" alt="image-20200404000624053" style="zoom:20%;" /><img src="/Users/neilhuang/PycharmProjects/DA_1/README.assets/image-20200404000644645.png" alt="image-20200404000644645" style="zoom:20%;" />
